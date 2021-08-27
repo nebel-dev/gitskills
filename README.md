@@ -1,3 +1,2 @@
-# gitskills
+# Git Skills
 
-## Does md file can viewd in git diff?
