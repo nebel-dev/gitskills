@@ -320,6 +320,10 @@ Git鼓励大量使用分支：
 
 查看分支：`git branch`
 
+查看远程分支 `git branch -r`
+
+查看所有分支 `git branch -a`
+
 创建分支：`git branch <name>`
 
 切换分支：`git checkout <name>`或者`git switch <name>`
@@ -329,6 +333,8 @@ Git鼓励大量使用分支：
 合并某分支到当前分支：`git merge <name>`
 
 删除分支：`git branch -d <name>`
+
+删除远程分支 `git push 远程仓库名 :分支名`   比如 git push origin :main
 
 #### 解决冲突
 
@@ -660,6 +666,7 @@ $ git tag -d v0.1
 
 ```shell
 $ git push origin :refs/tags/v0.9
+$ git push origin :v0.9
 ```
 
 ##### 更多：
