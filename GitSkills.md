@@ -523,7 +523,7 @@ $ git push origin master
 在另一台电脑（注意要把SSH Key添加到GitHub）或者同一台电脑的另一个目录下克隆：
 
 ```shell
-$ git@github.com:yangxinsheng523/learn-git.git
+$ ggit@github.com:yangxinsheng523/learn-git.git
 ```
 
 当你的小伙伴从远程库clone时，默认情况下，你的小伙伴只能看到本地的`master`分支。
