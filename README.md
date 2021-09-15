@@ -562,7 +562,8 @@ $ git checkout -b dev origin/dev
 ```shell
 $ git pull
 当前分支没有跟踪信息。请指定您要合并哪一个分支。详见 git-pull(1)。
-$ git pull <远程> <分支>如果您想要为此分支创建跟踪信息，您可以执行：
+$ git pull <远程> <分支>
+如果您想要为此分支创建跟踪信息，您可以执行：
 $ git branch --set-upstream-to=origin/<分支> dev
 ```
 
