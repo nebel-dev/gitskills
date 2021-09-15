@@ -192,7 +192,10 @@ $ git reset HEAD readme.txt
 所以，如果文件添加到暂存区后又做了修改，想要清除暂存区和工作区的所有修改，可以：
 
 ```shell
-# 回退版本，清除暂存区$ git reset HEAD readme.txt# 丢弃工作区的修改$ git checkout -- readme.txt
+# 回退版本，清除暂存区
+$ git reset HEAD readme.txt
+# 丢弃工作区的修改
+$ git checkout -- readme.txt
 ```
 
 如果提交了不合适的修改到版本库时，想要撤销本次提交，参考[版本回退]()一节，前提是没有推送到远程库。
@@ -284,7 +287,9 @@ GitHub允许你添加多个Key。假定你有若干电脑，你一会儿在公�
 如果添加的时候地址写错了，或者就是想删除远程库，可以用`git remote rm <name>`命令。使用前，建议先用`git remote -v`查看远程库信息：
 
 ```shell
-$ git remote -v                                   origin	git@github.com:yangxinsheng523/learn-git.git (fetch)origin	git@github.com:yangxinsheng523/learn-git.git (push)
+$ git remote -v
+origin	git@github.com:yangxinsheng523/learn-git.git (fetch)
+origin	git@github.com:yangxinsheng523/learn-git.git (push)
 ```
 
 然后，根据名字删除，比如删除`origin`：
@@ -312,20 +317,22 @@ $ git clone git@github.com:yangxinsheng523/gitskills.git
 #### 创建与合并分支
 
 ```shell
-git checkout -b dev
+$ git checkout -b dev
 ```
 
 `git checkout`命令加上`-b`参数表示创建并切换，相当于以下两条命令：
 
 ```shell
-git branch devgit checkout dev
+$git branch devgit checkout dev
 ```
 
 用`git branch`查看当前分支，当前分支前会标`*`号。
 在`dev`分支上完成工作，切换回`master`分支，再把`dev`分支的工作成果合并到`master`分支上：
 
 ```shell
-$ git merge dev更新 5395a5c..2fa06b9Fast-forward GitSkills.md | 0 1 file changed, 0 insertions(+), 0 deletions(-) create mode 100644 GitSkills.md
+$ git merge dev
+更新 5395a5c..2fa06b9Fast-forward GitSkills.md | 0
+1 file changed, 0 insertions(+), 0 deletions(-) create mode 100644 GitSkills.md
 ```
 
 `git merge`命令用于合并指定分支到当前分支。
@@ -334,7 +341,7 @@ $ git merge dev更新 5395a5c..2fa06b9Fast-forward GitSkills.md | 0 1 file chang
 合并完成后，就可以放心地删除`dev`分支了：
 
 ```shell
-git branch -d dev
+$ git branch -d dev
 ```
 
 因为创建、合并和删除分支非常快，所以Git鼓励你使用分支完成某个任务，合并后再删掉分支，这和直接在`master`分支上工作效果是一样的，但过程更安全。
@@ -366,7 +373,7 @@ Git鼓励大量使用分支：
 新建分支
 
 ```shell
-git switch -c feature1
+$ git switch -c feature1
 ```
 
 修改文件内容并提交
@@ -376,7 +383,7 @@ git switch -c feature1
 合并分支到`master`:
 
 ```shell
-git merge feature1
+$ git merge feature1
 ```
 
 产生冲突，无法合并，修改后再提交，两个分支就会自动合并，最后删除`feature1`分支。
@@ -384,7 +391,7 @@ git merge feature1
 查看分支合并情况：
 
 ```shell
-git log --graph --pretty=oneline --abbrev-commit
+$ git log --graph --pretty=oneline --abbrev-commit
 ```
 
 #### 分支管理策略
@@ -392,13 +399,15 @@ git log --graph --pretty=oneline --abbrev-commit
 `Fast forward`模式，删除分支前，分支历史信息：
 
 ```shell
-$ git log --graph --pretty=oneline --abbrev-commit* a1cc25f (HEAD -> master, dev) dev update* b16bc29 wrote a readme file
+$ git log --graph --pretty=oneline --abbrev-commit
+* a1cc25f (HEAD -> master, dev) dev update* b16bc29 wrote a readme file
 ```
 
 删除分支后，分支历史信息：
 
 ```shell
-$ git log --graph --pretty=oneline --abbrev-commit* a1cc25f (HEAD -> master) dev update* b16bc29 wrote a readme file
+$ git log --graph --pretty=oneline --abbrev-commit
+* a1cc25f (HEAD -> master) dev update* b16bc29 wrote a readme file
 ```
 
 强制禁用`Fast forward`模式，Git就会在merge时生成一个新的commit，这样，从分支历史上就可以看出分支信息。
@@ -406,19 +415,19 @@ $ git log --graph --pretty=oneline --abbrev-commit* a1cc25f (HEAD -> master) dev
 创建并切换`dev`分支：
 
 ```shell
-git switch -c dev
+$ git switch -c dev
 ```
 
 修改文件并提交，切换回`master`：
 
 ```shell
-git switch master
+$ git switch master
 ```
 
 准备合并`dev`分支，请注意`--no-ff`参数，表示禁用`Fast forward`：
 
 ```shell
-git merge --no-ff -m "merge with no-ff" dev
+$ git merge --no-ff -m "merge with no-ff" dev
 ```
 
 因为本次合并要创建一个新的commit，所以加上`-m`参数，把commit描述写进去。
@@ -426,13 +435,23 @@ git merge --no-ff -m "merge with no-ff" dev
 合并后，我们用`git log`看看删除分支前的分支历史：
 
 ```shell
-$ git log --graph --pretty=oneline --abbrev-commit*   907026a (HEAD -> master) no-ff-merge|\  | * ae71770 (dev) dev update|/  * b16bc29 wrote a readme file
+$ git log --graph --pretty=oneline --abbrev-commit
+*   907026a (HEAD -> master) no-ff-merge
+|\  
+| * ae71770 (dev) dev update
+|/  
+* b16bc29 wrote a readme file
 ```
 
 删除分支后的分支历史：
 
 ```shell
-$ git log --graph --pretty=oneline --abbrev-commit*   907026a (HEAD -> master) no-ff-merge|\  | * ae71770 dev update|/  * b16bc29 wrote a readme file
+$ git log --graph --pretty=oneline --abbrev-commit
+*   907026a (HEAD -> master) no-ff-merge
+|\  
+| * ae71770 dev update
+|/  
+* b16bc29 wrote a readme file
 ```
 
 ##### 小结
@@ -460,7 +479,11 @@ $ git switch master$ git switch -c issue-101Switched to a new branch 'issue-101'
 修复bug提交后，切换到`master`分支，合并，删除`issue-101`分支：
 
 ```shell
-$ git add readme.txt $ git commit -m "fix bug 101"[issue-101 4c805e2] fix bug 101 1 file changed, 1 insertion(+), 1 deletion(-)$ git switch master$ git merge --no-ff -m "merged bug fix 101" issue-101
+$ git add readme.txt 
+$ git commit -m "fix bug 101"
+[issue-101 4c805e2] fix bug 101 1 file changed, 1 insertion(+), 1 deletion(-)
+$ git switch master
+$ git merge --no-ff -m "merged bug fix 101" issue-101
 ```
 
 恢复`dev`工作区状态：
@@ -478,13 +501,16 @@ $ git add readme.txt $ git commit -m "fix bug 101"[issue-101 4c805e2] fix bug 10
 如果`dev`上有从`master`复制过来的bug，可以把`[issue-101 4c805e2] fix bug 101`这个提交“**复制**”到`dev`上：
 
 ```shell
-$ git branch* dev  master$ git cherry-pick 4c805e2[master 1d4b803] fix bug 101 1 file changed, 1 insertion(+), 1 deletion(-)
+$ git branch* dev  master
+$ git cherry-pick 4c805e2
+[master 1d4b803] fix bug 101 1 file changed, 1 insertion(+), 1 deletion(-)
 ```
 
 注意，使用`git cherry-pick`前，需要先用`git stash`保存现场。
 
 ```shell
-$ g cherry-pick 4c805e2error: 您的本地修改将被拣选覆盖。提示：提交您的修改或贮藏后再继续。fatal: 拣选失败
+$ git cherry-pick 4c805e2
+error: 您的本地修改将被拣选覆盖。提示：提交您的修改或贮藏后再继续。fatal: 拣选失败
 ```
 
 #### Feature分支
@@ -498,7 +524,9 @@ $ g cherry-pick 4c805e2error: 您的本地修改将被拣选覆盖。提示：�
 查看远程库的信息，用`git remote`：
 
 ```shell
-$ git remote$ git remote -v  # 显示详细信息origin	git@github.com:yangxinsheng523/learn-git.git (fetch)origin	git@github.com:yangxinsheng523/learn-git.git (push)
+$ git remote$ git remote -v  # 显示详细信息
+origin	git@github.com:yangxinsheng523/learn-git.git (fetch)
+origin	git@github.com:yangxinsheng523/learn-git.git (push)
 ```
 
 上面显示了可以抓取和推送的`origin`的地址。如果没有推送权限，就看不到push的地址。
@@ -516,7 +544,7 @@ $ git push origin master
 在另一台电脑（注意要把SSH Key添加到GitHub）或者同一台电脑的另一个目录下克隆：
 
 ```shell
-$ ggit@github.com:yangxinsheng523/learn-git.git
+$ git clone git@github.com:yangxinsheng523/learn-git.git
 ```
 
 当你的小伙伴从远程库clone时，默认情况下，你的小伙伴只能看到本地的`master`分支。
@@ -532,13 +560,17 @@ $ git checkout -b dev origin/dev
 推送失败，因为你的小伙伴的最新提交和你试图推送的提交有冲突，解决办法也很简单，Git已经提示我们，先用`git pull`把最新的提交从`origin/dev`抓下来，然后，在本地合并，解决冲突，再推送，
 
 ```shell
-$ git pull当前分支没有跟踪信息。请指定您要合并哪一个分支。详见 git-pull(1)。    git pull <远程> <分支>如果您想要为此分支创建跟踪信息，您可以执行：    git branch --set-upstream-to=origin/<分支> dev
+$ git pull
+当前分支没有跟踪信息。请指定您要合并哪一个分支。详见 git-pull(1)。
+$ git pull <远程> <分支>如果您想要为此分支创建跟踪信息，您可以执行：
+$ git branch --set-upstream-to=origin/<分支> dev
 ```
 
 `git pull`也失败了，原因是没有指定本地`dev`分支与远程`origin/dev`分支的链接，根据提示，设置`dev`和`origin/dev`的链接：
 
 ```shell
-$ git branch --set-upstream-to=origin/dev dev$ git pull
+$ git branch --set-upstream-to=origin/dev dev
+$ git pull
 ```
 
 这回`git pull`成功，但是合并有冲突，需要手动解决，解决的方法和分支管理中的解决冲突完全一样。解决后，提交，再push即可。
@@ -597,7 +629,8 @@ $ git tag
 默认标签是打在最新提交的commit上的，也可以根据commit id在需要的地方打标签：
 
 ```shell
-$ git log --pretty=oneline --abbrev-commita6bbfbf new file477e41e day day day
+$ git log --pretty=oneline --abbrev-commita6bbfbf 
+new file477e41e day day day
 ```
 
 如果要对`day day day`这次提交打标签：
@@ -686,7 +719,10 @@ $ git push origin :refs/tags/v0.9$ git push origin :v0.9
 告诉Git，以后`st`就表示`status`：
 
 ```shell
-$ git config --global alias.st status$ git config --global alias.co checkout$ git config --global alias.ci commit$ git config --global alias.br branch
+$ git config --global alias.st status
+$ git config --global alias.co checkout
+$ git config --global alias.ci commit
+$ git config --global alias.br branch
 ```
 
 `--global`参数是全局参数，也就是这些命令在这台电脑的所有Git仓库下都有用。
@@ -694,7 +730,9 @@ $ git config --global alias.st status$ git config --global alias.co checkout$ gi
 把暂存区的修改撤销掉：
 
 ```shell
-$ git config --global alias.unstage 'reset HEAD'$ git unstage test.py$ git reset HEAD test.py
+$ git config --global alias.unstage 'reset HEAD'
+$ git unstage test.py
+$ git reset HEAD test.py
 ```
 
 配置Git的时候，加上`--global`是针对当前用户起作用的，如果不加，那只针对当前的仓库起作用。
