@@ -37,6 +37,13 @@
       - [搭建Git服务器](#搭建git服务器)
 ## 创建版本库
 
+配置git：
+
+```shell
+$ git config --global user.name "Your Name"
+$ git config --global user.email "email@example.com"
+```
+
 首先，选择一个合适的地方，创建一个空目录：
 
 ```shell
@@ -57,8 +64,9 @@ $ git init
 把一个文件放到Git仓库只需要两步：
 
 1. 添加文件：`git add <filename>`
-
 2. 提交文件：`git commit -m “提交说明”`
+2. 添加所有更改到暂存：`git add .`
+2. 取消暂存：`git restore --staged <文件>...`
 
 **注意：**
 
@@ -70,6 +78,13 @@ $ git init
 `git status`命令可以让我们时刻掌握仓库当前的状态。
 
 `git diff <filename>`这个命令查看文件做了什么修改。
+
+- 要明白这3个概念，工作区（**working tree**），暂存区（**index /stage**），本地仓库（**repository**）
+- 跟不同的参数，比较不同的区间的版本。
+
+1. git diff：是查看working tree与index的差别的。
+2. git diff --cached：是查看index与repository的差别的。
+3. git diff HEAD：是查看working tree和repository的差别的。其中：HEAD代表的是最近的一次commit的信息。
 
 #### 版本回退
 
@@ -144,6 +159,24 @@ eaadf4e HEAD@{4}: commit (initial): wrote a readme file
 
 从输出可知，`append GPL`的commit id是`1094adb`。
 
+##### **注意：**
+
+如果已经有A -> B -> C，想回到B：
+
+- 方法一：reset到B，丢失C：
+
+A -> B
+
+- 方法二：再提交一个revert反向修改，变成B：
+
+A -> B -> C -> B
+
+C还在，但是两个B是重复的
+
+> *看你的需求，也许C就是瞎提交错了（比如把密码提交上去了），必须reset*
+>
+> *如果C就是修改，现在又要改回来，将来可能再改成C，那你就revert*
+
 #### 工作区和暂存区
 
 工作区：就是你在电脑里能看到的目录
@@ -164,14 +197,15 @@ Git跟踪并管理的是修改，而非文件。
 
 当你用`git add`命令后，在工作区的第一次修改被放入暂存区，准备提交，但是，在工作区的第二次修改并没有放入暂存区，所以，`git commit`只负责把暂存区的修改提交了，也就是第一次的修改被提交了，第二次的修改不会被提交。
 
-提交后，用`git diff HEAD -- readme.txt`命令可以查看工作区和版本库里面最新版本的区别。
+提交后，用`git diff HEAD -- readme.txt ` 或 `git diff HEAD readme.txt`命令可以查看工作区和版本库里面最新版本的区别。
 
 #### 撤销修改
 
-`git checkout -- file`可以**丢弃**工作区的修改：
+`git checkout -- file` 或 `git restore <文件>...`可以**丢弃**工作区的修改：
 
 ```shell
 $ git checkout -- readme.txt
+$ git restore readme.txt
 ```
 
 该命令表示把`readme.txt`文件在工作区的修改全部撤销，这里有两种情况：
@@ -181,7 +215,7 @@ $ git checkout -- readme.txt
 
 总之，就是让这个文件回到最近一次`git commit`或`git add`时的状态。
 
-用命令`git reset HEAD <file>`可以把**暂存区的修改撤销掉**（unstage），**重新放回**工作区：
+用命令`git reset HEAD <file>`或 `git restore --staged <文件>...`gi可以把**暂存区的修改撤销掉**（unstage），**重新放回**工作区：
 
 ```shell
 $ git reset HEAD readme.txt
@@ -192,10 +226,12 @@ $ git reset HEAD readme.txt
 所以，如果文件添加到暂存区后又做了修改，想要清除暂存区和工作区的所有修改，可以：
 
 ```shell
-# 回退版本，清除暂存区
+# 回退版本，清除暂存区,2种方法
 $ git reset HEAD readme.txt
-# 丢弃工作区的修改
+$ git restore --staged readme.txt
+# 丢弃工作区的修改，2种方法
 $ git checkout -- readme.txt
+$ git restore readme.txt
 ```
 
 如果提交了不合适的修改到版本库时，想要撤销本次提交，参考[版本回退]()一节，前提是没有推送到远程库。
@@ -221,7 +257,8 @@ $ rm test.txt
 1. 确实要从版本库中删除该文件，那就用`git rm`删掉，再执行一次`git commit`；
 
    ```shell
-   $ git rm test.txt$ git commit -m "remove test.txt"
+   $ git rm test.txt
+   $ git commit -m "remove test.txt"
    ```
 
    现在文件就从版本库中删除了。
@@ -230,10 +267,11 @@ $ rm test.txt
 
    ```shell
    $ git checkout -- test.txt
+   $ git restore test.txt
    ```
-
+   
    `git checkout`其实是用版本库里的版本替换工作区的版本，无论工作区是修改还是删除，都可以“一键还原”。
-
+   
    **从来没有被添加到版本库就被删除的文件，是无法恢复的！**
 
 ##### 注意：
@@ -323,7 +361,8 @@ $ git checkout -b dev
 `git checkout`命令加上`-b`参数表示创建并切换，相当于以下两条命令：
 
 ```shell
-$git branch devgit checkout dev
+$ git branch dev
+$ git checkout devg
 ```
 
 用`git branch`查看当前分支，当前分支前会标`*`号。
